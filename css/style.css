@@ -1,0 +1,702 @@
+/* ==========================================================================
+   1. 変数と基本設定 (Base)
+   ========================================================================== */
+:root {
+  --primary-color: #333333;
+  --text-color: #444444;
+  --accent-color: #cccccc;    
+  --bg-color: #fdfdfd;
+  --tag-bg: #f0f0f0;
+  --border-color: #eeeeee;
+  --nav-text-color: #666666; 
+  --common-border-color: #f0f0f0;
+}
+
+html {
+  scroll-behavior: smooth; /* スムーススクロール */
+}
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding-top: 80px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Noto Sans JP", sans-serif;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.sp-br {
+  display: none;
+}
+
+
+/* ==========================================================================
+   2. ヘッダー (Fixed Header)
+   ========================================================================== */
+header {
+  position: fixed; top: 0; left: 0; z-index: 1000;
+  width: 100%; padding: 24px 0;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--common-border-color);
+}
+
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+
+/* --- ロゴ設定 --- */
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 100%;
+}
+
+.logo span {
+  color: var(--accent-color);
+}
+
+/* --- ナビゲーション設定 --- */
+.nav-list { display: flex; gap: 40px; list-style: none; margin: 0; }
+
+/* --- ロゴとナビ共通のリンク・アニメーション設定 --- */
+.logo a,
+.nav-link {
+  display: inline-block;
+  color: var(--nav-text-color) !important;
+  font-weight: 700;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* ナビの色だけ少し抑える */
+.nav-link {
+  color: #666666;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* --- 全リンク共通のホバーアクション --- */
+.logo a:hover,
+.nav-link:hover {
+  opacity: 0.7;
+  transform: translateY(-2px);
+  color: var(--primary-color) !important;
+}
+
+
+/* ==========================================================================
+   3. 共通セクション設定 (Layout & UI)
+   ========================================================================= */
+.section-title,
+.about-section-title {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 120%;
+  letter-spacing: 0.05em;
+}
+
+/* 個別の余白設定 */
+.section-title {
+  padding: 40px 0 8px;
+}
+
+.about-section-title {
+  padding: 80px 0 8px;
+}
+
+/* ボーダーのアニメーション設定（両方に適用） */
+.section-title::before,
+.section-title::after,
+.about-section-title::before,
+.about-section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+}
+
+.section-title::before,
+.about-section-title::before {
+  left: 0;
+  width: 100%;
+  background-color: var(--border-color);
+}
+
+.section-title::after,
+.about-section-title::after {
+  left: 50%;
+  width: 0;
+  background-color: var(--accent-color);
+  transform: translateX(-50%);
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* クラス付与時の動き */
+.section-title.is-active::after,
+.about-section-title.is-active::after {
+  width: 100%;
+}
+
+/* ==========================================================================
+   4. WORKS (実績グリッド)
+   ========================================================================== */
+
+#works {
+  padding-top: 20px;
+  background-color: #ffffff;
+}
+
+/* --- Layout: Grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px;
+  padding: 48px 0 64px;
+}
+
+/* --- Animation: Fade In Up (ゆっくり・ふわっと版) --- */
+.card-link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  /* 初期状態 */
+  opacity: 0;
+  transform: translateY(50px);
+  will-change: opacity, transform;
+  /* 1.6sの優雅なイージング */
+  transition: 
+    opacity 1600ms cubic-bezier(0.215, 0.61, 0.355, 1), 
+    transform 1600ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* 表示時 */
+.card-link.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 1枚ずつ丁寧に表示するディレイ設定 */
+.grid .card-link:nth-child(2) { transition-delay: 600ms; }
+.grid .card-link:nth-child(3) { transition-delay: 600ms; }
+
+/* 保険：JS無効時 */
+.no-js .card-link {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Component: Card --- */
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  transition: 
+    transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1), 
+    box-shadow 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Card Image --- */
+.card-img-container {
+  aspect-ratio: 17 / 11;
+  overflow: hidden;
+  background-color: #eeeeee;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card:hover .card-img {
+  filter: brightness(1.05);
+  transform: scale(1.05);
+}
+
+/* --- Card Content --- */
+.card-content {
+  flex-grow: 1;
+  padding: 24px;
+}
+
+.card-content h3 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 160%;
+  text-align: justify;
+  font-feature-settings: "palt" 1;
+}
+
+/* Tags */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  padding: 2px 10px;
+  background-color: var(--tag-bg);
+  color: #666666;
+  font-size: 11px;
+  border-radius: 20px;
+  transition: background-color 600ms, color 600ms;
+}
+
+.card:hover .tag {
+  color: #ffffff;
+  background-color: var(--accent-color);
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+
+/* ==========================================================================
+   5. ABOUT (コンセプト & アニメーション)
+   ========================================================================== */
+#about {
+  position: relative;
+  border-top: 1px solid var(--border-color);
+  margin: 32px 0 56px 0;
+}
+
+#about::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  z-index: 5;
+  width: 0;
+  height: 1px;
+  background-color: var(--primary-color);
+  transition: width 3.0s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#about.is-active::before {
+  width: 100%;
+}
+
+.concept-catch {
+  margin-bottom: 40px;
+  background-image: linear-gradient(to right, var(--text-color) 50%, transparent 50%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 150%;
+  opacity: 0;
+}
+
+.concept-catch.is-active {
+  animation: textRevealFlow 5.0s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.concept-text {
+  margin-bottom: 32px;
+  color: var(--text-color);
+  font-size: 16px;
+  line-height: 200%;
+  text-align: justify;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 2.5s ease-out, transform 2.5s ease-out;
+  transition-delay: 1.2s;
+}
+
+#about.is-active .concept-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes textRevealFlow {
+  0% { background-position: 100% 50%; filter: blur(5px); opacity: 0; transform: translateY(15px); }
+  100% { background-position: 0% 50%; filter: blur(0); opacity: 1; transform: translateY(0); }
+}
+
+
+/* ==========================================================================
+   6. フッター (共通)
+   ========================================================================== */
+footer {
+  padding: 60px 0;
+  text-align: center;
+  background-color: #ffffff;
+  border-top: 1px solid var(--common-border-color);
+  color: var(--nav-text-color);
+}
+
+footer p { font-size: 12px; letter-spacing: 0.1em; opacity: 0.8; margin: 0; }
+
+
+/* ==========================================================================
+   8. プロジェクト詳細ページ専用スタイル (PC/ベース設定)
+   ========================================================================== */
+
+.project-detail .section {
+  padding: 32px 0;
+}
+
+.project-hero {
+  padding-top: 40px;
+  background-color: #ffffff;
+}
+
+.project-main-img {
+  width: 100%;
+  height: auto;
+  min-height: 300px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.project-main-img picture,
+.project-main-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.project-header-box {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 56px;
+  padding: 0 0 40px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.project-main-titles { flex: 0 0 65%; }
+
+.client-name {
+  display: block;
+  margin: 0 0 12px;
+  color: #999999;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+
+.project-catchphrase {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.project-meta-table dl {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: baseline;
+  gap: 16px 0;
+}
+
+.project-meta-table dt {
+  color: #bbbbbb;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: justify;
+  text-align-last: justify;
+}
+
+.project-meta-table dd {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.challenge-solution-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.logic-card {
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+}
+
+.logic-label {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.logic-card p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.story-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  margin-top: 56px;
+}
+
+.story-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+}
+
+.story-text {
+  flex: 0 0 46%;
+}
+
+.story-sub-title {
+  margin: 0 0 24px;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent-color);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.story-text p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 2.0;
+  text-align: justify;
+}
+
+.story-image { flex: 0 0 46%; }
+.story-image img { display: block; width: 100%; height: auto; }
+
+.project-nav .container {
+  display: flex;
+  justify-content: space-between;
+  padding: 60px 0;
+  border-top: 1px solid var(--common-border-color);
+}
+
+/* --- Gallery Section --- */
+.project-gallery.section {
+  background-color: #f9f9f9; /* 少し背景色を変えると区切りが明確になります */
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2カラム */
+  gap: 40px;
+  margin-top: 56px;
+}
+
+.gallery-item {
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-5px);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* レスポンシブ：スマホでは1カラム */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+
+/* ==========================================================================
+   Project Detail Animations (スクロール時のふわっと表示)
+   ========================================================================== */
+
+/* 初期状態 */
+.js-scroll-trigger {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: opacity, transform;
+  transition: 
+    opacity 1600ms cubic-bezier(0.215, 0.61, 0.355, 1), 
+    transform 1600ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* 表示時：!importantでインラインスタイル等の干渉を防止 */
+.js-scroll-trigger.is-active {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ロジックカードの2枚目を遅らせてリズムを作る */
+.logic-card.js-scroll-trigger:nth-child(2) {
+  transition-delay: 200ms;
+}
+
+
+/* ==========================================================================
+   Interactive Elements (ホバーアクション：共通・下部ナビ)
+   ========================================================================== */
+
+.project-nav .container {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--common-border-color);
+  padding: 60px 0;
+}
+
+.back-link, .next-link {
+  display: inline-block;
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.back-link:hover, .next-link:hover {
+  opacity: 0.7;
+  transform: translateY(-4px); /* 下部ナビはボタンらしく強めに浮かす */
+}
+
+
+/* ==========================================================================
+   7. レスポンシブ (Responsive)
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  /* グリッド・カードの一カラム化 */
+  .grid,
+  .challenge-solution-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* プロジェクト詳細：ヘッダーエリア */
+  .project-header-box {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 48px;
+  }
+
+  .project-main-titles,
+  .project-meta-table {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .project-catchphrase {
+    font-size: 28px;
+    line-height: 1.4;
+  }
+
+  /* ロジックカード */
+  .logic-card {
+    padding: 32px 24px !important;
+  }
+
+  /* ストーリーセクション：画像を上、文字を下に固定 */
+  .story-item, 
+  .story-item.invert {
+    flex-direction: column-reverse !important;
+    gap: 32px !important;
+  }
+
+  .story-text, 
+  .story-image {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+  }
+
+  .story-sub-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px;
+  }
+
+  .section-title {
+    padding-top: 32px;
+    font-size: 30px;
+  }
+
+  .concept-catch {
+    margin-bottom: 32px;
+    font-size: 32px;
+  }
+
+  .concept-text {
+    font-size: 15px;
+  }
+
+  .project-nav .container {
+    padding: 48px 0;
+  }
+
+  /* メインビジュアル：スマホ用画像の比率を優先 */
+  .project-main-img {
+    aspect-ratio: auto !important; 
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .project-main-img img {
+    height: auto !important;
+    object-fit: contain !important;
+  }
+}
